@@ -7,12 +7,14 @@ import javax.validation.Valid;
 import br.com.tokiomarine.seguradora.avaliacao.entidade.Estudante;
 
 public interface EstudandeService {
-
+	
 	List<Estudante> buscarEstudantes();
 
 	void cadastrarEstudante(@Valid Estudante estudante);
 
-	Estudante buscarEstudante(long id);
+	Estudante buscarEstudante(int id);
 
 	void atualizarEstudante(@Valid Estudante estudante);
+
+	boolean deletarEstudante(int id);
 }

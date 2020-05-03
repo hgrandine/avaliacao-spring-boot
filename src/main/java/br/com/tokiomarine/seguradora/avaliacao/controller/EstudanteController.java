@@ -1,7 +1,10 @@
 package br.com.tokiomarine.seguradora.avaliacao.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,36 +20,46 @@ import br.com.tokiomarine.seguradora.avaliacao.service.EstudandeService;
 @RequestMapping("/estudantes/")
 public class EstudanteController {
 
-	// TODO efetue a correção dos problemas que existem na classe Estudante Controller
+	@Autowired
 	EstudandeService service;
 
 	@GetMapping("criar")
 	public String iniciarCastrado(Estudante estudante) {
-		return "cadastrar-estudante";
+		try {
+			service.cadastrarEstudante(estudante);
+			return "estudante cadastrado";
+		}catch (Exception e) {
+			return "erro no cadastro";
+		}
+		
+		
 	}
 
 	@GetMapping("listar")
-	public String listarEstudantes(Model model) {
-		model.addAttribute("estudtes", service.buscarEstudantes());
-		return "index";
+	public List<Estudante> listarEstudantes() {
+		return service.buscarEstudantes();
 	}
 
 	@PostMapping("add")
-	public String adicionarEstudante(@Valid Estudante estudante, BindingResult result, Model model) {
-		if (result.hasErrors()) {
-			return "cadastrar-estudante";
+	public String adicionarEstudante(@Valid Estudante estudante) {
+		try {
+			service.cadastrarEstudante(estudante);
+		}catch (Exception e) {
+			return "erro ao adicionar";
 		}
-
-		service.cadastrarEstudante(estudante);
-
-		return "redirect:listar";
+		return "adicionado";
 	}
 
 	@GetMapping("editar/{id}")
-	public String exibirEdicaoEstudante(long id, Model model) {
-		Estudante estudante = service.buscarEstudante(id);
-		model.addAttribute("estudante", estudante);
-		return "atualizar-estudante";
+	public String exibirEdicaoEstudante(int id) {
+		try {
+			Estudante estudante = service.buscarEstudante(id);
+			service.atualizarEstudante(estudante);
+			return "estudante atualizado";
+		}catch (Exception e) {
+			return "erro ao atualizar";
+		}
+		
 	}
 
 	@PostMapping("atualizar/{id}")
